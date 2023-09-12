@@ -1,4 +1,4 @@
-﻿namespace Problem03.ReversedList
+namespace Problem03.ReversedList
 {
     using System;
     using System.Collections;
@@ -6,21 +6,23 @@
 
     public class ReversedList<T> : IAbstractList<T>
     {
+        //Fields
         private const int DefaultCapacity = 4;
-
         private T[] items;
 
-        public ReversedList()
-            : this(DefaultCapacity) { }
+        //Constructors
+        public ReversedList() : this(DefaultCapacity) { }
 
         public ReversedList(int capacity)
         {
             if (capacity < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(capacity));
-
+            }
             this.items = new T[capacity];
         }
 
+        //Indexator
         public T this[int index]
         {
             get
@@ -35,8 +37,10 @@
             }
         }
 
+        //Properties
         public int Count { get; private set; }
 
+        //Methods
         public void Add(T item)
         {
             if (this.items.Length >= this.Count)
@@ -66,15 +70,19 @@
         public void Insert(int index, T item)
         {
             this.ValidateIndex(index);
+
             if (this.Count >= this.items.Length)
             {
                 this.Grow();
             }
+
             index = this.Count - index;
+
             for (int i = this.Count; i > index; i--)
             {
                 this.items[i] = this.items[i - 1];
             }
+
             this.items[index] = item;
             this.Count++;
         }
@@ -82,10 +90,12 @@
         public bool Remove(T item)
         {
             int index = this.IndexOf(item);
+
             if (index == -1)
             {
                 return false;
             }
+
             this.RemoveAt(index);
             return true;
         }
@@ -94,24 +104,15 @@
         {
             this.ValidateIndex(index);
             index = this.Count - 1 - index;
+
             for (int i = index; i < this.Count - 1; i++)
             {
                 this.items[i] = this.items[i + 1];
             }
+
             this.items[this.Count - 1] = default;
             this.Count--;
         }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            for (int i = this.Count - 1; i >= 0; i--)
-            {
-                yield return this.items[i];
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => this.GetEnumerator();
 
         public void Grow()
         {
@@ -120,6 +121,7 @@
             this.items = newArr;
         }
 
+        //Private Methods
         private void ValidateIndex(int index)
         {
             if (index < 0 || index >= this.Count)
@@ -127,5 +129,16 @@
                 throw new IndexOutOfRangeException("Invalid index given");
             }
         }
+
+        //Enumerable Methods
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = this.Count - 1; i >= 0; i--)
+            {
+                yield return this.items[i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }
